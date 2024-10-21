@@ -31,10 +31,12 @@ public class APICall : MonoBehaviour
     }
 
     public Calendar calendar;
+    APIDisplay display;
 
     // Start is called before the first frame update
     void Start()
     {
+        display = FindObjectOfType<APIDisplay>();
         StartCoroutine(GetRequest("https://api.waktusolat.app/v2/solat/sgr01"));
     }
     
@@ -51,20 +53,40 @@ public class APICall : MonoBehaviour
                 break;
             case UnityWebRequest.Result.Success:
                 Debug.Log("Web Request Succeeded");
-                calendar = JsonUtility.FromJson<Calendar>(webRequest.downloadHandler.text);
-
-                string isoTimestamp = calendar.last_updated;
-
-                // Parse the ISO 8601 string to DateTime
-                DateTime dateTime = DateTime.Parse(isoTimestamp, null, System.Globalization.DateTimeStyles.RoundtripKind);
-
-                // Optionally, convert to local time
-                DateTime localTime = dateTime.ToLocalTime();
-
-                calendar.last_updated = localTime.ToString();
-                ConvertAllPrayerTimestamps();
+                SetupDisplay(webRequest);
                 break;
         }
+    }
+
+    private void SetupDisplay(UnityWebRequest webRequest)
+    {
+        SetCalendarLastUpdated(webRequest);
+        ConvertAllPrayerTimestamps();
+        display.SetCalendarTexts(calendar.zone, calendar.year.ToString(), calendar.month, calendar.last_updated);
+        foreach(Prayer prayer in calendar.prayers){
+            display.CreatePrayerSlot(
+                prayer.day,
+                prayer.fajr,
+                prayer.syuruk,
+                prayer.dhuhr,
+                prayer.asr,
+                prayer.maghrib,
+                prayer.isha
+            );
+        }
+    }
+
+    private void SetCalendarLastUpdated(UnityWebRequest webRequest)
+    {
+        calendar = JsonUtility.FromJson<Calendar>(webRequest.downloadHandler.text);
+
+        string isoTimestamp = calendar.last_updated;
+
+        DateTime dateTime = DateTime.Parse(isoTimestamp, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+        DateTime localTime = dateTime.ToLocalTime();
+
+        calendar.last_updated = localTime.ToString();
     }
 
     private void ConvertAllPrayerTimestamps()
