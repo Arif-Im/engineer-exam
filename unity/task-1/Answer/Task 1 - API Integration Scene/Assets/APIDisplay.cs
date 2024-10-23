@@ -5,6 +5,9 @@ using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 
+//! Arif (23/10/2024)
+// Use 1920x1080 resolution for the best display of UI
+// The UI uses a scrollbar. You can use the wheel on the mouse but it is best to click and drag the mouse for fast scrolling
 public class APIDisplay : MonoBehaviour
 {
     protected APICall apiCall;
