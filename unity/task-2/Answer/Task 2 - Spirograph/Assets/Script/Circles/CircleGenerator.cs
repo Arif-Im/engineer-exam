@@ -14,11 +14,11 @@ public class CircleGenerator : MonoBehaviour
 
     [Header("Circle Radius")]
     [SerializeField] protected float defaultFixedGearRadius = 5.0f;
-    protected float fixedGearRadius = 5.0f;
+    [SerializeField] protected float fixedGearRadius = 5.0f;
     [SerializeField] protected float defaultMovingGearRadius = 1.5f;
-    protected float movingGearRadius = 1.5f;
+    [SerializeField] protected float movingGearRadius = 1.5f;
     [SerializeField] protected float defaultDrawOffsetRadius = 1.2f;
-    protected float drawOffsetRadius = 1.2f;
+    [SerializeField] protected float drawOffsetRadius = 1.2f;
 
     [Header("Color")]
     [SerializeField] protected float morphTime = 2;
@@ -32,6 +32,23 @@ public class CircleGenerator : MonoBehaviour
 
         fixedMovingRatio = fixedGearRadius / movingGearRadius;
         CreateLineRenderer();
+        CreatePreset(defaultFixedGearRadius, defaultMovingGearRadius, drawOffsetRadius);
+    }
+
+    public void CreatePreset(float fixedGearRadius, float movingGearRadius, float drawOffsetRadius)
+    {
+        ClearCircle();
+        
+        this.fixedGearRadius = fixedGearRadius;
+        this.movingGearRadius = movingGearRadius;
+        this.drawOffsetRadius = drawOffsetRadius;
+
+        int index = 0;
+        for (float i = 0; i < 500; i += Time.deltaTime)
+        {
+            index++;
+            DrawSpirograph(out Vector2 movingGearOffset, out Vector2 drawPosition, i, index);
+        }
     }
 
     private void CreateLineRenderer()
@@ -58,30 +75,34 @@ public class CircleGenerator : MonoBehaviour
             ClearCircle();
         }
 
-        Vector2 movingGearOffset = new(
-            (fixedGearRadius - movingGearRadius) * Mathf.Cos(accumulatedTime),
-            (fixedGearRadius - movingGearRadius) * Mathf.Sin(accumulatedTime)
-        );
+        DrawSpirograph(out Vector2 movingGearOffset, out Vector2 drawPosition, accumulatedTime, lineIndex);
 
+        DrawDebugCircle(fixedGearPosition, fixedGearRadius, 0);
+        DrawDebugCircle(movingGearOffset, movingGearRadius, 0);
+        DrawDebugCircle(drawPosition, drawCircleRadius, 0);
+    }
+
+    private void DrawSpirograph(out Vector2 movingGearOffset, out Vector2 drawPosition, float timeElapsed, int index)
+    {
+        movingGearOffset = new(
+            (fixedGearRadius - movingGearRadius) * Mathf.Cos(timeElapsed),
+            (fixedGearRadius - movingGearRadius) * Mathf.Sin(timeElapsed)
+        );
         Vector2 drawOffset = new(
-            drawOffsetRadius * Mathf.Cos(-accumulatedTime * fixedMovingRatio),
-            drawOffsetRadius * Mathf.Sin(-accumulatedTime * fixedMovingRatio)
+            drawOffsetRadius * Mathf.Cos(-timeElapsed * fixedMovingRatio),
+            drawOffsetRadius * Mathf.Sin(-timeElapsed * fixedMovingRatio)
         );
 
         Vector2 movingGearPosition = fixedGearPosition + movingGearOffset;
-        Vector2 drawPosition = movingGearPosition + drawOffset;
-
-        DrawCircle(fixedGearPosition, fixedGearRadius, 0);
-        DrawCircle(movingGearOffset, movingGearRadius, 0);
-        DrawCircle(drawPosition, drawCircleRadius, 0);
-        if(lineIndex > 0)
+        drawPosition = movingGearPosition + drawOffset;
+        if (index > 0)
         {
-            lineRenderer.positionCount = lineIndex;
-            lineRenderer.SetPosition(lineIndex-1, drawPosition);
+            lineRenderer.positionCount = index;
+            lineRenderer.SetPosition(index - 1, drawPosition);
         }
     }
 
-    public void DrawCircle(Vector2 position, float radius, float duration)
+    public void DrawDebugCircle(Vector2 position, float radius, float duration)
     {
         bool isStarting = true;
         Vector2 currentDrawPoint = new(0,0);
