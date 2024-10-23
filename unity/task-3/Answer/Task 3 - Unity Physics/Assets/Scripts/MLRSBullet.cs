@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MLRSBullet : Bullet
 {
+    protected float homingSpeed = 100.0f;
 
     // Start is called before the first frame update
     new void Start()
@@ -29,6 +30,10 @@ public class MLRSBullet : Bullet
         heading.Normalize();
         float angle = Mathf.Atan2(heading.y, heading.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 100 * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, homingSpeed * Time.deltaTime);
+    }
+
+    public void SetHomingSpeed(float homingSpeed){
+        this.homingSpeed = Mathf.Max(homingSpeed, 0.0f);
     }
 }

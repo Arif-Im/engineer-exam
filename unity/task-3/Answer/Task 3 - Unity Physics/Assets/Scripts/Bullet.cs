@@ -55,6 +55,10 @@ public class Bullet : MonoBehaviour
     public void SetTarget(GameObject target){
         this.target = target;
     }
+
+    public void SetBulletSpeed(float speed){
+        this.speed = speed;
+    }
     
     void OnTriggerEnter2D(Collider2D col)
     {

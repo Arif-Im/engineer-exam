@@ -10,10 +10,13 @@ public class WeaponBehavior : MonoBehaviour
     [SerializeField] protected KeyCode downKey;
     [SerializeField] protected KeyCode leftKey;
     [SerializeField] protected KeyCode rightKey;
-    [SerializeField] protected float speed = 100.0f;
+    [SerializeField] protected float defaultSpeed = 100.0f;
+    protected float speed = 100.0f;
     [SerializeField] protected Bullet bulletPrefab;
     [SerializeField] protected string bulletPoolName;
     [SerializeField] protected float fireRate = 1.0f;
+    [SerializeField] protected float defaultBulletSpeed = 100.0f;
+    protected float bulletSpeed = 100.0f;
     protected GameObject bulletPoolGroupObject;
     [SerializeField] protected List<Bullet> bulletPool = new();
     protected IEnumerator coroutine;
@@ -22,6 +25,9 @@ public class WeaponBehavior : MonoBehaviour
     // Start is called before the first frame update
     protected void Start()
     {
+        speed = defaultSpeed;
+        bulletSpeed = defaultBulletSpeed;
+
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         bulletPoolGroupObject = GameObject.Find(bulletPoolName);
@@ -73,11 +79,19 @@ public class WeaponBehavior : MonoBehaviour
         return bullet;
     }
 
-    protected IEnumerator LaunchMissileCoroutine(){
+    public virtual IEnumerator LaunchMissileCoroutine(){
         Bullet bullet = LaunchMissile();
         bullet.SetTarget(target);
+        bullet.SetBulletSpeed(bulletSpeed);
         yield return new WaitForSeconds(fireRate);
         coroutine = LaunchMissileCoroutine();
         StartCoroutine(coroutine);
+    }
+
+    public void SetBulletSpeed(float bulletSpeed){
+        this.bulletSpeed = Mathf.Max(defaultBulletSpeed + bulletSpeed, 0.0f);
+    }
+    public void SetTankSpeed(float tankSpeed){
+        this.speed = Mathf.Max(defaultSpeed + tankSpeed, 0.0f);
     }
 }

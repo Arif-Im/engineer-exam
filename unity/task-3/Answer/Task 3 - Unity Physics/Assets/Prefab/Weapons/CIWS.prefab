@@ -106,7 +106,7 @@ MonoBehaviour:
   speed: 100
   bulletPrefab: {fileID: 7242592715957302849, guid: 3c564452c4e301c47b5b651f40c3c919, type: 3}
   bulletPoolName: CIWSBulletPool
-  fireRate: 1
+  fireRate: 0.2
   bulletPool: []
   sphereRadius: 3
   layer:
