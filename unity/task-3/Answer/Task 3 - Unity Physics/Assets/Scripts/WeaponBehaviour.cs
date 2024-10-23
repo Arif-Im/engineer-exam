@@ -38,24 +38,18 @@ public class WeaponBehavior : MonoBehaviour
         var weaponVelocity = new Vector2(0,0);
 
         if(Input.GetKey(upKey))
-        {
             weaponVelocity += Time.deltaTime * new Vector2(0,1);
-        }
         if(Input.GetKey(downKey))
-        {
             weaponVelocity += Time.deltaTime * new Vector2(0,-1);
-        }
         if(Input.GetKey(rightKey))
-        {
             weaponVelocity += Time.deltaTime * new Vector2(1,0);
-        }
         if(Input.GetKey(leftKey))
-        {
             weaponVelocity += Time.deltaTime * new Vector2(-1,0);
-        }
 
         var normalizedWeaponVelocity = weaponVelocity.normalized;
         rb.velocity = speed * Time.deltaTime * normalizedWeaponVelocity;
+        float angle = Mathf.Atan2(normalizedWeaponVelocity.y, normalizedWeaponVelocity.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
     protected Bullet GetBullet()

@@ -1121,6 +1121,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3560018415002543921, guid: 76f6b5bebcdfd01418aa3d7a6488f793, type: 3}
+      propertyPath: speed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6205815355772657353, guid: 76f6b5bebcdfd01418aa3d7a6488f793, type: 3}
       propertyPath: m_Name
       value: MLRS
@@ -1178,6 +1182,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5786791911090147280, guid: 1f6072bacc7bd2b42bf3c08398e858f3, type: 3}
+      propertyPath: speed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5786791911090147280, guid: 1f6072bacc7bd2b42bf3c08398e858f3, type: 3}
       propertyPath: fireRate
       value: 0.2
